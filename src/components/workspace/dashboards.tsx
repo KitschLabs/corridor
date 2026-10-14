@@ -78,7 +78,7 @@ export function MissionControl() {
       <section className="section">
         <SectionHeading
           title="Attention Needed"
-         
+
           action={
             <span className="count-label">
               {attention.length}
@@ -122,7 +122,7 @@ export function MyWork() {
   return (
     <div className="page">
       <PageHeading
-       
+
         action={
           <Button className="primary-button" onClick={() => setCompose(true)}>
             <Plus size={17} />
@@ -138,7 +138,7 @@ export function MyWork() {
         <section className="panel">
           <SectionHeading
             title="Personal Notes"
-           
+
             action={<LockKeyhole size={17} className="muted" />}
           />
           <div className="note-grid">
@@ -212,7 +212,7 @@ export function TeamFocus() {
   return (
     <div className="page">
       <PageHeading
-       
+
         action={
           <Button
             className="secondary-button"

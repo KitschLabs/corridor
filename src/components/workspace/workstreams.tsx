@@ -40,7 +40,7 @@ export function Workstreams() {
   return (
     <div className="page">
       <PageHeading
-       
+
         action={
           <Button className="primary-button" onClick={() => setCompose(true)}>
             <Plus size={17} />
@@ -247,7 +247,7 @@ export function WorkstreamDetail({ id }: { id: string }) {
         <section className="panel">
           <SectionHeading
             title="Timeline"
-           
+
             action={
               <button
                 className="text-link"
