@@ -255,6 +255,9 @@ export function TeamFocus() {
               </div>
               <h3>{goal.title[locale]}</h3>
               <p>{goal.description[locale]}</p>
+              {data.updates.find((item) => item.id.startsWith("demo-") && data.streams.some((stream) => stream.id === item.streamId && stream.goalId === goal.id)) && (
+                <Changes compact items={data.updates.filter((item) => item.id.startsWith("demo-") && data.streams.some((stream) => stream.id === item.streamId && stream.goalId === goal.id)).slice(0, 1)} />
+              )}
               <div className="goal-streams">
                 <span className="tiny-label">RELATED WORKSTREAMS</span>
                 {data.streams

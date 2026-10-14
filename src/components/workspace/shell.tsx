@@ -18,11 +18,14 @@ import {
   X,
   Globe2,
   Activity,
+  Pause,
+  Play,
 } from "lucide-react";
 import { organizations, searchWorkspace } from "@/lib/demo-data";
 import { type Locale } from "@/lib/messages";
 import { WorkspaceProvider, useWorkspace } from "./provider";
 import { Modal, Avatar } from "./primitives";
+import { DemoPlayback } from "./demo-playback";
 
 export const navigation = [
   { href: "/my-work", title: "My Work", icon: UserRound },
@@ -33,7 +36,7 @@ export const navigation = [
 ];
 
 function Shell({ children }: { children: ReactNode }) {
-  const { t, locale, setLocale, org, orgId, setOrgId } = useWorkspace();
+  const { t, locale, setLocale, org, orgId, setOrgId, playing, setPlaying } = useWorkspace();
   const pathname = usePathname();
   const router = useRouter();
   const [menu, setMenu] = useState(false);
@@ -179,6 +182,9 @@ function Shell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="topbar-actions">
+            <button className="icon-button" aria-label={playing ? t.feedPause : t.feedResume} onClick={() => setPlaying(!playing)}>
+              {playing ? <Pause size={16} /> : <Play size={16} />}
+            </button>
             <button className="search-trigger" onClick={() => setSearch(true)}>
               <Search size={16} />
               <span>{t.search}</span>
@@ -197,13 +203,8 @@ function Shell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <main id="main-content" key={orgId} tabIndex={-1}>
+          <DemoPlayback />
           {children}
-          <footer className="workspace-footer">
-            <span className="sample-dot" />
-            {t.sample}
-            <span>·</span>
-            {t.sampleHint}
-          </footer>
         </main>
       </div>
       {search && (

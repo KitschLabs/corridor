@@ -49,6 +49,15 @@ svg { flex-shrink: 0; stroke-width: 1.7; }
 .nav-workspace, .nav-team { display: flex; flex-direction: column; gap: 5px; }
 .nav-team { padding-bottom: 22px; }
 .live-feed { max-width: 920px; margin: 0 auto; }
+.demo-playback { position: fixed; right: 24px; bottom: 24px; width: min(400px, calc(100vw - 48px)); z-index: 20; display: flex; align-items: center; gap: 14px; padding: 10px 14px; min-height: 65px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: 0 4px 20px #080f1540; }
+.demo-event { min-width: 0; flex: 1; font-size: 11px; }
+.demo-event a { display: flex; flex-direction: column; }
+.demo-event strong, .demo-event span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.demo-event a span { color: var(--muted); }
+.demo-arrival { animation: change-arrival 900ms ease-out both; }
+@keyframes change-arrival { from { opacity: .3; transform: translateY(-6px); background-color: var(--blue-wash); } to { opacity: 1; transform: translateY(0); background-color: transparent; } }
+@media (prefers-reduced-motion: reduce) { .demo-arrival { animation: none; } }
+@media (max-width: 600px) { .demo-playback { gap: 8px; flex-wrap: wrap; } .demo-label { flex: 1; } .demo-event { order: 3; flex-basis: 100%; } }
 .feed-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
 .feed-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .feed-status .playing { background: var(--blue-text); box-shadow: 0 0 8px var(--corridor-blue); }
@@ -155,8 +164,8 @@ h1 { font-size: 30px; line-height: 1.25; letter-spacing: -.9px; font-weight: 650
 .change-artifacts { display: flex; flex: 0 0 auto; flex-direction: column; gap: 5px; align-self: center; }
 .artifact-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 32px; min-height: 32px; padding: 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); color: var(--muted); }
 .artifact-link:hover { color: var(--ink); border-color: var(--blue-text); }
-.artifact-link.drive { color: var(--blue-text); }
-.artifact-link.instagram { color: var(--red-text); }
+.service-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+.artifact-link.github .service-logo { filter: brightness(0) invert(1); }
 .change-artifacts.expanded { flex-direction: row; flex-wrap: wrap; margin: 16px 0; }
 .change-artifacts.expanded .artifact-link { justify-content: flex-start; font-size: 12px; }
 .change-meta { display: flex; align-items: center; gap: 6px; font-size: 9px; }
