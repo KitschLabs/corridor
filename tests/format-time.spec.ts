@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import { formatTime } from "../src/lib/format-time";
 
 test("timestamps use calendar days and localized relative times", () => {
@@ -22,10 +22,10 @@ test("timestamps use calendar days and localized relative times", () => {
 test("visible timestamps refresh as time passes", async ({ page }) => {
   await page.clock.install({ time: new Date("2026-10-14T09:30:00+09:00") });
   await page.goto("/my-work");
-  await page.getByRole("button", { name: "일시정지", exact: true }).click();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
   await page.clock.runFor(1);
   const stamp = page.locator('time[datetime="2026-10-14T09:00:00+09:00"]').first();
-  await expect(stamp).toHaveText("30분 전");
+  await expect(stamp).toHaveText("30m ago");
   await page.clock.fastForward(60_000);
-  await expect(stamp).toHaveText("31분 전");
+  await expect(stamp).toHaveText("31m ago");
 });

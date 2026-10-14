@@ -7,7 +7,7 @@ import { viewerId, type Update } from "@/lib/demo-data";
 import { usePathname } from "next/navigation";
 
 function useWorkspaceState() {
-  const [locale, setLocale] = useState<Locale>("ko");
+  const [locale, setLocale] = useState<Locale>("en");
   const [orgId, setOrgId] = useState("corridor");
   const [now, setNow] = useState<Date | null>(null);
   const pathname = usePathname();
@@ -16,7 +16,7 @@ function useWorkspaceState() {
   const [replay, setReplay] = useState<{ scope: string; count: number; updates: Update[] }>({ scope: "", count: 0, updates: [] });
   const demoUpdates = replay.scope === scope ? replay.updates : [];
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || pathname === "/connect") return;
     const base = organizationData(orgId);
     const candidates = base.streams.filter((stream) => {
       if (pathname.startsWith("/workstreams/")) return stream.id === pathname.split("/").at(-1);

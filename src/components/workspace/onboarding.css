@@ -1,0 +1,13 @@
+.onboarding { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: hidden; }
+.onboarding::backdrop { background: transparent; }
+.tour-ring { position: fixed; pointer-events: none; border: 2px solid var(--blue-text); border-radius: 9px; box-shadow: 0 0 0 100vmax #030a12b8, 0 0 22px #1769b350; }
+.tour-bubble { position: fixed; left: 12px; top: 12px; width: min(340px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; border: 1px solid #37638b; border-radius: 12px; padding: 20px; background: #142436; box-shadow: 0 12px 44px #0007; }
+.tour-meta, .tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tour-meta { color: var(--muted); font-size: 11px; margin-bottom: 12px; }
+.tour-bubble h2 { font-size: 18px; margin-bottom: 9px; }
+.tour-bubble p { font-size: 13px; line-height: 1.8; color: #c5d3e2; }
+.tour-bubble button { background: transparent; border: 0; padding: 6px 8px; border-radius: 5px; font-size: 12px; }
+.tour-bubble button:hover { background: #ffffff0c; }
+.tour-bubble button:disabled { opacity: .35; cursor: default; }
+.tour-actions { margin-top: 20px; }
+.tour-actions .tour-next { background: var(--corridor-blue); padding: 8px 18px; color: white; }

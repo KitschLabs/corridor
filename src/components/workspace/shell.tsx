@@ -20,12 +20,14 @@ import {
   Activity,
   Pause,
   Play,
+  Plug,
 } from "lucide-react";
 import { organizations, searchWorkspace } from "@/lib/demo-data";
 import { type Locale } from "@/lib/messages";
 import { WorkspaceProvider, useWorkspace } from "./provider";
 import { Modal, Avatar } from "./primitives";
 import { DemoPlayback } from "./demo-playback";
+import { Onboarding } from "./onboarding";
 
 export const navigation = [
   { href: "/my-work", title: "My Work", icon: UserRound },
@@ -33,6 +35,7 @@ export const navigation = [
   { href: "/workstreams", title: "Workstreams", icon: Layers3 },
   { href: "/mission-control", title: "Mission Control", icon: Radio },
   { href: "/team-focus", title: "Team Focus", icon: Crosshair },
+  { href: "/connect", title: "Connect", icon: Plug },
 ];
 
 function Shell({ children }: { children: ReactNode }) {
@@ -128,7 +131,7 @@ function Shell({ children }: { children: ReactNode }) {
           { ["WORKSPACE", "TEAM"].map((group) => (
           <div key={group} className={group === "TEAM" ? "nav-team" : "nav-workspace"}>
           {group === "TEAM" && <div className="nav-label">TEAM</div>}
-          {navigation.filter((item) => (group === "TEAM") === ["/mission-control", "/team-focus"].includes(item.href)).map(({ href, title, icon: Icon }) => (
+          {navigation.filter((item) => item.href !== "/connect" && (group === "TEAM") === ["/mission-control", "/team-focus"].includes(item.href)).map(({ href, title, icon: Icon }) => (
             <Link
               key={href}
               href={href}
@@ -145,6 +148,11 @@ function Shell({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="sidebar-bottom">
+          <Link href="/connect" className={`nav-item connect-nav ${pathname === "/connect" ? "selected" : ""}`} aria-current={pathname === "/connect" ? "page" : undefined} onClick={() => setMenu(false)}>
+            <Plug size={18} />
+            <span>Connect</span>
+            {pathname === "/connect" && <span className="nav-current" />}
+          </Link>
           <button
             className="profile-button"
             onClick={() => {
@@ -182,9 +190,9 @@ function Shell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="topbar-actions">
-            <button className="icon-button" aria-label={playing ? t.feedPause : t.feedResume} onClick={() => setPlaying(!playing)}>
+            {pathname !== "/connect" && <button className="icon-button" aria-label={playing ? t.feedPause : t.feedResume} onClick={() => setPlaying(!playing)}>
               {playing ? <Pause size={16} /> : <Play size={16} />}
-            </button>
+            </button>}
             <button className="search-trigger" onClick={() => setSearch(true)}>
               <Search size={16} />
               <span>{t.search}</span>
@@ -207,6 +215,7 @@ function Shell({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
+      <Onboarding key={pathname} path={pathname} setMenu={setMenu} />
       {search && (
         <Modal
           title={t.searchTitle}
