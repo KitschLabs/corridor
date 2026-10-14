@@ -24,7 +24,7 @@ import {
 import { Changes } from "./sections";
 
 export function Workstreams() {
-  const { t, locale, data } = useWorkspace();
+  const { t, locale, data, latestDemo } = useWorkspace();
   const [goal, setGoal] = useState("");
   const [pic, setPic] = useState("");
   const [member, setMember] = useState("");
@@ -135,7 +135,7 @@ export function Workstreams() {
               </div>
               <span className="stream-code">{stream.code}</span>
               <h2>{stream.title[locale]}</h2>
-              <p>{stream.state[locale]}</p>
+              <p key={latestDemo?.streamId === stream.id ? latestDemo.id : stream.id} className={latestDemo?.streamId === stream.id ? "demo-arrival" : undefined}>{stream.state[locale]}</p>
               <div className="card-goal">
                 <span>{t.goal}</span>
                 {

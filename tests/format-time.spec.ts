@@ -22,6 +22,7 @@ test("timestamps use calendar days and localized relative times", () => {
 test("visible timestamps refresh as time passes", async ({ page }) => {
   await page.clock.install({ time: new Date("2026-10-14T09:30:00+09:00") });
   await page.goto("/my-work");
+  await page.getByRole("button", { name: "일시정지", exact: true }).click();
   await page.clock.runFor(1);
   const stamp = page.locator('time[datetime="2026-10-14T09:00:00+09:00"]').first();
   await expect(stamp).toHaveText("30분 전");

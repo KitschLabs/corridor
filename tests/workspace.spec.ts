@@ -6,6 +6,10 @@ test("change artifacts appear on the right and remain available in details", asy
   await page.getByRole("button", { name: "일시정지", exact: true }).click();
   for (const service of ["github", "drive", "instagram"]) {
     await expect(page.locator(`.feed-panel .artifact-link.${service}`).first()).toBeVisible();
+    const logo = page.locator(`.feed-panel .artifact-link.${service} img`).first();
+    await logo.scrollIntoViewIfNeeded();
+    await expect(logo).toHaveAttribute("src", `/service-logos/${service}.svg`);
+    await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
   }
   const row = page.locator(".feed-panel .change-row").filter({ has: page.locator(".artifact-link.instagram") }).first();
   const link = row.locator(".artifact-link.instagram");
@@ -108,40 +112,31 @@ test("shared navigation, detail, browser back, and locale stay connected", async
   expect(errors).toEqual([]);
 });
 
-test("Live Feed replays team changes, pauses, and isolates organizations", async ({ page }) => {
+test("sample playback continues past one minute on every page and can pause", async ({ page }) => {
   await page.clock.install();
+  for (const route of ["/live-feed", "/mission-control", "/my-work", "/workstreams", "/team-focus", "/workstreams/voice-quality"]) {
+    await page.goto(route);
+    for (let i = 1; i <= 9; i++) {
+      await page.clock.runFor(8000);
+      await expect(page.locator(".demo-event .demo-arrival")).toBeVisible();
+    }
+    const label = await page.locator(".demo-event").textContent();
+    await page.getByRole("button", { name: "일시정지", exact: true }).click();
+    await page.clock.runFor(16000);
+    await expect(page.locator(".demo-event")).toHaveText(label!);
+    expect(await page.locator(".demo-arrival").count()).toBeGreaterThan(0);
+  }
   await page.goto("/live-feed");
-  await expect(page.locator(".nav-team a")).toHaveText(["Mission Control", "Team Focus"]);
-  const rows = page.locator(".feed-panel .change-row");
-  const initial = await rows.count();
-  await page.clock.fastForward(4000);
-  await expect(rows).toHaveCount(initial + 1);
-  await page.getByRole("button", { name: "일시정지", exact: true }).click();
-  await page.clock.fastForward(8000);
-  await expect(rows).toHaveCount(initial + 1);
-  await rows.first().locator(".change-title").click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "재생", exact: true }).click();
-  for (let i = 0; i < 4; i++) await page.clock.fastForward(4000);
-  await expect(rows).toHaveCount(initial + 5);
-  await expect(page.getByRole("status")).toHaveText("샘플 재생 완료");
-  const times = await rows.locator("time").evaluateAll((elements) => elements.map((el) => el.getAttribute("datetime")!));
-  expect(times).toEqual([...times].sort().reverse());
+  for (let i = 0; i < 20; i++) await page.clock.runFor(8000);
+  await expect(page.locator(".feed-panel .change-row")).toHaveCount(organizationData("corridor").updates.length + 12);
+  await page.getByLabel("조직 전환", { exact: true }).selectOption("orbit");
+  await expect(page.locator(".demo-event .demo-arrival")).toHaveCount(0);
+  await page.clock.runFor(8000);
+  await expect(page.locator(".demo-event")).toContainText("초기 고객 인터뷰");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".demo-event a")).toHaveCSS("animation-name", "none");
   await page.setViewportSize({ width: 360, height: 800 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: "test-results/live-feed-mobile.png", fullPage: true });
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.screenshot({ path: "test-results/live-feed-desktop.png", fullPage: true });
-  await page.getByRole("combobox", { name: "조직 전환", exact: true }).selectOption("orbit");
-  await page.getByRole("navigation").getByRole("link", { name: "Live Feed", exact: true }).click();
-  await expect(rows).toHaveCount(1);
-  const orbitUpdates = organizationData("orbit").updates;
-  for (let i = 0; i < orbitUpdates.length - 1; i++) await page.clock.fastForward(4000);
-  await expect(rows).toHaveCount(orbitUpdates.length);
-  expect(await rows.evaluateAll((elements) => elements.map((el) => el.id).sort()))
-    .toEqual(orbitUpdates.map((item) => item.id).sort());
-  await expect(page.getByRole("status")).toHaveText("샘플 재생 완료");
 });
 
 test("workstream filters combine and reset", async ({ page }) => {

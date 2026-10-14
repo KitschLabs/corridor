@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -10,9 +11,6 @@ import {
   TriangleAlert,
   GitBranch,
   CircleHelp,
-  GitPullRequest,
-  HardDrive,
-  Camera,
 } from "lucide-react";
 import { people, viewerId, myWorkChanges, type Stream, type Update, type TeamAttention } from "@/lib/demo-data";
 import { useWorkspace } from "./provider";
@@ -22,20 +20,20 @@ import { formatTime } from "@/lib/format-time";
 function ArtifactLinks({ item, expanded = false }: { item: Update; expanded?: boolean }) {
   const { locale } = useWorkspace();
   const services = {
-    github: { icon: GitPullRequest, name: "GitHub PR" },
-    drive: { icon: HardDrive, name: "Google Drive" },
-    instagram: { icon: Camera, name: "Instagram" },
+    github: "GitHub PR",
+    drive: "Google Drive",
+    instagram: "Instagram",
   };
   if (!item.artifacts?.length) return null;
   return (
     <span className={`change-artifacts ${expanded ? "expanded" : ""}`}>
       {item.artifacts.map((artifact) => {
-        const { icon: Icon, name } = services[artifact.service];
+        const name = services[artifact.service];
         const label = `${name}: ${artifact.title[locale]} (${locale === "ko" ? "예시 링크 · 새 탭" : "example link · new tab"})`;
         return (
           <a key={artifact.url} href={artifact.url} target="_blank" rel="noopener noreferrer"
             className={`artifact-link ${artifact.service}`} aria-label={label} title={label}>
-            <Icon size={17} aria-hidden="true" />
+            <Image src={`/service-logos/${artifact.service}.svg`} width={18} height={18} alt="" className="service-logo" />
             {expanded && <span>{artifact.title[locale]}</span>}
           </a>
         );
@@ -113,7 +111,7 @@ export function Changes({
               (stream) => stream.id === item.streamId,
             )!;
             return (
-              <article className="change-row" key={item.id} id={timeline ? undefined : item.id}>
+              <article className={`change-row ${item.id.startsWith("demo-") ? "demo-arrival" : ""}`} key={item.id} id={timeline ? undefined : item.id}>
                 <Avatar id={item.author} small />
                 <div>
                   <div className="change-meta">
