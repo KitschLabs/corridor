@@ -69,6 +69,7 @@ svg { flex-shrink: 0; stroke-width: 1.7; }
 .nav-item.selected { color: var(--blue-text); background: var(--blue-wash); font-weight: 650; }
 .nav-current { width: 5px; height: 5px; border-radius: 50%; background: var(--corridor-blue); margin-left: auto; }
 .sidebar-bottom { margin-top: auto; }
+.connect-nav { margin-bottom: 16px; }
 .sidebar-note { padding: 36px 13px 26px; }
 .sidebar-note .tiny-label { font-size: 8px; color: var(--muted); }
 .sidebar-note p { margin-top: 9px; color: var(--muted); font-size: 11px; line-height: 1.8; }

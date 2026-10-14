@@ -1,6 +1,6 @@
 import { kitschGoals, kitschStreams } from "./kitsch-fixtures";
 import { kitschUpdates } from "./kitsch-updates";
-import { text, type Localized, type Locale } from "./messages";
+import { type Localized, type Locale } from "./messages";
 
 // Fictional fixtures only. Production private data must never be shipped in this module.
 export const viewerId = "min";
@@ -13,13 +13,8 @@ export const people = [
 ];
 export const organizations = [
   { id: "corridor", name: "Kitsch Labs", initials: "KL" },
-  { id: "orbit", name: "Orbit Studio", initials: "OS" },
 ];
-export const goals = [...kitschGoals, {
-  id: "g3-orbit", orgId: "orbit",
-  title: text("새로운 팀의 시작을 돕기", "Help new teams get started"),
-  description: text("초기 고객의 협업 흐름을 이해합니다.", "Understand early customer collaboration."),
-}];
+export const goals = kitschGoals;
 export type Stream = {
   id: string;
   orgId: string;
@@ -33,31 +28,7 @@ export type Stream = {
   goalId: string;
   status: "active" | "paused" | "completed" | "archived";
 };
-export const streams: Stream[] = [
-  ...kitschStreams,
-  {
-    id: "customer-discovery",
-    orgId: "orbit",
-    code: "WS–01",
-    title: text("초기 고객 인터뷰", "Early customer discovery"),
-    description: text(
-      "새 팀의 협업 방식을 이해합니다.",
-      "Understand how new teams collaborate.",
-    ),
-    state: text(
-      "인터뷰 질문을 정리하고 있습니다.",
-      "Preparing the interview guide.",
-    ),
-    next: text(
-      "첫 인터뷰 일정을 정합니다.",
-      "Schedule the first conversation.",
-    ),
-    pic: "min",
-    members: ["june"],
-    goalId: "g3-orbit",
-    status: "active",
-  },
-];
+export const streams: Stream[] = kitschStreams;
 export type TeamAttention = {
   id: string;
   orgId: string;
@@ -205,57 +176,7 @@ export type Update = {
     url: string;
   }[];
 };
-export const updates: Update[] = [
-  ...kitschUpdates,
-  {
-    id: "u5",
-    createdAt: "2026-10-14T09:00:00+09:00",
-    streamId: "customer-discovery",
-    author: "min",
-    type: "progress",
-    title: text("인터뷰 질문 초안 작성", "Interview guide drafted"),
-    body: text(
-      "개인 기록과 팀 공유 사이의 흐름을 중심으로 질문을 준비했습니다.",
-      "The questions focus on moving between personal notes and team sharing.",
-    ),
-  },
-  {
-    id: "customer-discovery-history-1",
-    createdAt: "2026-10-13T10:00:00+09:00",
-    streamId: "customer-discovery",
-    author: "june",
-    type: "decision",
-    title: text("첫 인터뷰는 기록에서 공유까지의 흐름에 집중", "Focus first interviews on the path from notes to sharing"),
-    body: text("기능 선호보다 실제 기록과 공유 경험을 묻기로 했습니다.", "We will ask about real note-taking and sharing experiences before feature preferences."),
-  },
-  {
-    id: "customer-discovery-history-2",
-    createdAt: "2026-10-12T10:00:00+09:00",
-    streamId: "customer-discovery",
-    author: "min",
-    type: "progress",
-    title: text("초기 인터뷰 후보 팀 정리", "Prepared the first interview shortlist"),
-    body: text("서로 다른 협업 방식을 가진 초기 팀을 후보로 정리했습니다.", "We shortlisted early teams with different collaboration habits."),
-  },
-  {
-    id: "customer-discovery-history-3",
-    createdAt: "2026-10-11T10:00:00+09:00",
-    streamId: "customer-discovery",
-    author: "june",
-    type: "learning",
-    title: text("작은 팀도 업무 맥락이 쉽게 흩어져요", "Context gets fragmented even in small teams"),
-    body: text("초기 대화에서 메신저와 개인 메모를 오가며 결정을 찾는 일이 반복됐습니다.", "Early conversations described repeatedly searching chats and private notes for decisions."),
-  },
-  {
-    id: "customer-discovery-history-4",
-    createdAt: "2026-10-10T10:00:00+09:00",
-    streamId: "customer-discovery",
-    author: "min",
-    type: "progress",
-    title: text("고객 탐색 질문의 가설 정리", "Outlined discovery hypotheses"),
-    body: text("기록 부담과 팀 공유 시점에 대한 질문 가설을 준비했습니다.", "We drafted questions about recording effort and when people share with their team."),
-  },
-];
+export const updates: Update[] = kitschUpdates;
 
 export function myWorkChanges(items: Update[], streamId: string, userId: string) {
   const ordered = items.filter((item) => item.streamId === streamId)

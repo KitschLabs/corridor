@@ -1,0 +1,29 @@
+.connect-page { max-width: 1080px; margin: 12px auto; }
+.connect-intro { display: flex; align-items: center; gap: 22px; margin-bottom: 38px; }
+.connect-symbol { display: grid; place-items: center; width: 64px; height: 64px; flex-shrink: 0; border: 1px solid #2d5273; border-radius: 16px; color: var(--blue-text); background: var(--corridor-gradient-deep-sky-blue); }
+.connect-intro h2 { font-size: 26px; letter-spacing: -.7px; margin: 5px 0 8px; }
+.connect-intro p, .connect-feature p, .connect-step p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.connect-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 32px; }
+.connect-setup { padding: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.connect-step-title { display: flex; align-items: center; gap: 12px; }
+.connect-step-title > span { font: 12px monospace; color: var(--blue-text); }
+.connect-step-title h3 { font-size: 15px; font-weight: 600; }
+.connect-clients { display: flex; gap: 8px; margin: 24px 0 18px; }
+.connect-clients button { display: flex; align-items: center; justify-content: center; gap: 9px; flex: 1; background: transparent; border: 1px solid var(--line); border-radius: 7px; padding: 12px; font-size: 13px; }
+.connect-clients button[aria-pressed="true"] { background: var(--blue-wash); border-color: var(--corridor-blue); color: var(--blue-text); }
+.connect-terminal { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--canvas); }
+.connect-terminal-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 11px; color: var(--muted); }
+.connect-terminal-bar button { display: flex; align-items: center; gap: 6px; padding: 6px; border: 0; background: transparent; }
+.connect-terminal-bar button:hover { color: var(--blue-text); }
+.connect-terminal pre { margin: 0; padding: 20px 16px; overflow-x: auto; font-size: 12px; line-height: 2.2; }
+.connect-source { font-size: 11px; color: var(--muted); margin-top: 12px; overflow-wrap: anywhere; }
+.connect-step { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+.connect-step p { margin: 10px 0 0 28px; }
+.connect-context { padding: 14px 0; }
+.connect-feature { display: flex; gap: 14px; margin-bottom: 26px; }
+.connect-feature > svg { margin-top: 4px; color: var(--blue-text); }
+.connect-feature h3 { font-size: 14px; margin-bottom: 7px; }
+.connect-prompt { border-left: 2px solid var(--corridor-blue); padding: 4px 0 4px 18px; margin-top: 35px; }
+.connect-prompt p { font-size: 14px; margin-top: 10px; line-height: 1.9; }
+@media (max-width: 1100px) { .connect-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .connect-intro { align-items: flex-start; gap: 14px; margin-bottom: 24px; } .connect-symbol { width: 44px; height: 44px; border-radius: 12px; } .connect-intro h2 { font-size: 21px; } .connect-setup { padding: 18px; } }

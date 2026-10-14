@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import { recentStreamUpdates, myWorkChanges, updates, organizationData } from "../src/lib/demo-data";
 
 test("change artifacts appear on the right and remain available in details", async ({ page }) => {
   await page.goto("/live-feed");
-  await page.getByRole("button", { name: "일시정지", exact: true }).click();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
   for (const service of ["github", "drive", "instagram"]) {
     await expect(page.locator(`.feed-panel .artifact-link.${service}`).first()).toBeVisible();
     const logo = page.locator(`.feed-panel .artifact-link.${service} img`).first();
@@ -40,14 +40,14 @@ test("my work includes the latest change and my last contribution only when diff
 
 test("My Work shows latest team context alongside my last change", async ({ page }) => {
   await page.goto("/my-work");
-  const shared = page.locator(".my-stream").filter({ hasText: "음성 모델 실험·평가" });
+  const shared = page.locator(".my-stream").filter({ hasText: "Voice experiments & evaluation" });
   await expect(shared.locator(".change-row")).toHaveCount(2);
-  await expect(shared.locator(".my-last-change")).toContainText("평가 입력 세트 고정");
-  const onboarding = page.locator(".my-stream").filter({ hasText: "루마·린 음성 품질" });
+  await expect(shared.locator(".my-last-change")).toContainText("Evaluation inputs frozen");
+  const onboarding = page.locator(".my-stream").filter({ hasText: "Luma & Rin voice quality" });
   await expect(onboarding.locator(".change-row")).toHaveCount(1);
   await expect(onboarding.locator(".my-last-change")).toHaveCount(0);
   await shared.locator(".my-last-change .change-title").click();
-  await expect(page.getByRole("dialog")).toContainText("평가 입력 세트 고정");
+  await expect(page.getByRole("dialog")).toContainText("Evaluation inputs frozen");
   await page.keyboard.press("Escape");
   await page.setViewportSize({ width: 360, height: 800 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -76,6 +76,7 @@ test("shared navigation, detail, browser back, and locale stay connected", async
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(page).toHaveURL(/mission-control/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
   const nav = page.getByRole("navigation");
   for (const title of [
     "Mission Control",
@@ -89,9 +90,10 @@ test("shared navigation, detail, browser back, and locale stay connected", async
       page.getByRole("heading", { name: title, exact: true }),
     ).toBeVisible();
     await expect(nav.getByRole("link")).toHaveCount(5);
+    await expect(page.locator("main")).not.toContainText(/[가-힣]/);
   }
   await page
-    .getByRole("link", { name: "루마·린 음성 품질", exact: true })
+    .getByRole("link", { name: "Luma & Rin voice quality", exact: true })
     .click();
   await expect(page).toHaveURL(/workstreams\/voice-quality/);
   await expect(
@@ -104,8 +106,8 @@ test("shared navigation, detail, browser back, and locale stay connected", async
   await expect(
     page.getByRole("heading", { name: "Team Focus", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "표시 언어", exact: true }).click();
-  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.getByRole("button", { name: "Display language", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ko");
   await expect(
     page.getByText("MAKE AI VOICE TO FALL FOR"),
   ).toBeVisible();
@@ -121,7 +123,7 @@ test("sample playback continues past one minute on every page and can pause", as
       await expect(page.locator(".demo-event .demo-arrival")).toBeVisible();
     }
     const label = await page.locator(".demo-event").textContent();
-    await page.getByRole("button", { name: "일시정지", exact: true }).click();
+    await page.getByRole("button", { name: "Pause", exact: true }).click();
     await page.clock.runFor(16000);
     await expect(page.locator(".demo-event")).toHaveText(label!);
     expect(await page.locator(".demo-arrival").count()).toBeGreaterThan(0);
@@ -129,10 +131,10 @@ test("sample playback continues past one minute on every page and can pause", as
   await page.goto("/live-feed");
   for (let i = 0; i < 20; i++) await page.clock.runFor(8000);
   await expect(page.locator(".feed-panel .change-row")).toHaveCount(organizationData("corridor").updates.length + 12);
-  await page.getByLabel("조직 전환", { exact: true }).selectOption("orbit");
+  await page.goto("/mission-control");
   await expect(page.locator(".demo-event .demo-arrival")).toHaveCount(0);
   await page.clock.runFor(8000);
-  await expect(page.locator(".demo-event")).toContainText("초기 고객 인터뷰");
+  await expect(page.locator(".demo-event")).toContainText("Luma & Rin voice quality");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator(".demo-event a")).toHaveCSS("animation-name", "none");
   await page.setViewportSize({ width: 360, height: 800 });
@@ -144,35 +146,35 @@ test("workstream filters combine and reset", async ({ page }) => {
   await expect(page.locator(".workstream-card")).toHaveCount(13);
   await page.getByLabel("PIC", { exact: true }).selectOption("min");
   await expect(page.locator(".workstream-card")).toHaveCount(2);
-  await page.getByLabel("상태", { exact: true }).selectOption("paused");
-  await expect(page.getByText("표시할 업무가 없습니다.")).toBeVisible();
-  await page.getByRole("button", { name: "필터 초기화" }).click();
-  await page.getByLabel("참여 멤버", { exact: true }).selectOption("hana");
+  await page.getByLabel("Status", { exact: true }).selectOption("paused");
+  await expect(page.getByText("No workstreams to show.")).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await page.getByLabel("Members", { exact: true }).selectOption("hana");
   await expect(page.locator(".workstream-card")).toHaveCount(6);
-  await page.getByLabel("팀 목표", { exact: true }).selectOption("g4");
+  await page.getByLabel("Team goal", { exact: true }).selectOption("g4");
   await expect(page.locator(".workstream-card")).toHaveCount(2);
 });
 
-test("search scopes results to selected organization and closes with Escape", async ({
+test("search finds workspace notes and closes with Escape", async ({
   page,
 }) => {
   await page.goto("/mission-control");
   await page.keyboard.press("Control+k");
-  await page.getByRole("textbox", { name: "Global Search" }).fill("인터뷰");
+  await page.getByRole("textbox", { name: "Global Search" }).fill("interview");
   await expect(
-    page.getByRole("dialog").getByRole("link", { name: /음성 청취 인터뷰 메모/ }),
+    page.getByRole("dialog").getByRole("link", { name: /Voice listening interview notes/ }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await page.getByLabel("조직 전환", { exact: true }).selectOption("orbit");
+  await expect(page.getByLabel("Switch organization", { exact: true }).locator("option")).toHaveText(["Kitsch Labs"]);
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Workstreams", exact: true })
     .click();
-  await expect(page.locator(".workstream-card")).toHaveCount(1);
+  await expect(page.locator(".workstream-card")).toHaveCount(13);
   await page.keyboard.press("Control+k");
-  await page.getByRole("textbox", { name: "Global Search" }).fill("루마");
-  await expect(page.getByText("일치하는 결과가 없습니다.")).toBeVisible();
+  await page.getByRole("textbox", { name: "Global Search" }).fill("nonexistent-workstream");
+  await expect(page.getByText("No matching results.")).toBeVisible();
 });
 
 test("attention opens source detail and private space shows no fabricated captures", async ({
@@ -181,12 +183,12 @@ test("attention opens source detail and private space shows no fabricated captur
   await page.goto("/mission-control");
   await page.locator(".attention-card").first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("dialog").getByText("확인된 상황", { exact: true })).toBeVisible();
-  await expect(page.getByRole("dialog").getByText("팀에서 논의할 사항", { exact: true })).toBeVisible();
+  await expect(page.getByRole("dialog").getByText("Reported context", { exact: true })).toBeVisible();
+  await expect(page.getByRole("dialog").getByText("For the team to discuss", { exact: true })).toBeVisible();
   await expect(page.getByRole("dialog").getByRole("link")).toHaveCount(2);
   await page
     .getByRole("dialog")
-    .getByRole("link", { name: "루마·린 음성 품질", exact: true })
+    .getByRole("link", { name: "Luma & Rin voice quality", exact: true })
     .click();
   await expect(page).toHaveURL(/voice-quality#discussion/);
   await page
@@ -194,14 +196,14 @@ test("attention opens source detail and private space shows no fabricated captur
     .getByRole("link", { name: "My Work", exact: true })
     .click();
   await expect(page.locator(".stream-row")).toHaveCount(5);
-  await expect(page.getByText("연결된 에이전트 없음")).toBeVisible();
+  await expect(page.getByText("No agent connected")).toBeVisible();
   await page
-    .getByRole("button", { name: "메모 작성", exact: true })
+    .getByRole("button", { name: "Write a note", exact: true })
     .first()
     .click();
   await expect(
     page.getByText(
-      "레이아웃 프리뷰입니다. 입력 내용은 저장되거나 공유되지 않습니다.",
+      "Layout preview. Your input is not saved or shared.",
     ),
   ).toBeVisible();
   await page
@@ -221,7 +223,7 @@ test("360px navigation and every layout fit the viewport", async ({ page }) => {
     "Team Focus",
     "Mission Control",
   ]) {
-    await page.getByRole("button", { name: "메뉴 열기" }).click();
+    await page.getByRole("button", { name: "Open menu" }).click();
     await page
       .getByRole("navigation")
       .getByRole("link", { name: title, exact: true })
@@ -259,10 +261,6 @@ test("goal cards scope streams and attention across synthetic goals", async ({ p
   }
   await goals.last().click();
   await expect(page.locator(".stream-timeline")).toHaveCount(13);
-  await page.getByLabel("조직 전환", { exact: true }).selectOption("orbit");
-  await expect(goals).toHaveCount(1);
-  await expect(page.locator(".stream-timeline")).toHaveCount(1);
-  await expect(page.locator(".attention-card")).toHaveCount(0);
 });
 
 test("desktop layout screenshot", async ({ page }) => {
@@ -280,11 +278,11 @@ test("desktop layout screenshot", async ({ page }) => {
 test("PIC columns scroll horizontally without overflowing the page", async ({ page }) => {
   await page.setViewportSize({ width: 1000, height: 900 });
   await page.goto("/mission-control");
-  const board = page.getByRole("region", { name: "PIC별 Workstreams" });
+  const board = page.getByRole("region", { name: "Workstreams by PIC" });
   await expect(board.locator(".pic-row")).toHaveCount(5);
-  await expect(board.getByRole("region", { name: "PIC: Min", exact: true }).locator(".stream-timeline").first()).toContainText("루마·린 음성 품질");
+  await expect(board.getByRole("region", { name: "PIC: Min", exact: true }).locator(".stream-timeline").first()).toContainText("Luma & Rin voice quality");
   const row = board.getByRole("region", { name: "Min Workstreams", exact: true });
-  await board.getByRole("region", { name: "PIC: Min", exact: true }).getByRole("button", { name: "오른쪽으로 스크롤", exact: true }).click();
+  await board.getByRole("region", { name: "PIC: Min", exact: true }).getByRole("button", { name: "Scroll right", exact: true }).click();
   await expect.poll(() => row.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
   await page.locator(".mission-goal").first().click();
   await expect(board.locator(".pic-row")).toHaveCount(2);
