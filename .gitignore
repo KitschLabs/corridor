@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.env*
+!.env.example
+next-env.d.ts
+.vercel/
+# Internal research sources; excluded from this public repository.
+docs/plan/kitsch-workspace-draft.md
+
+.vercel
+.env*
