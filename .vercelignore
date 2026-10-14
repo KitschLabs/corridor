@@ -1,0 +1,5 @@
+docs/
+tests/
+test-results/
+playwright-report/
+.env*

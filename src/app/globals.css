@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-primary: #1769b3;
+  --color-primary-foreground: #fff;
+  --color-background: var(--canvas);
+  --color-accent: var(--blue-wash);
+  --color-accent-foreground: var(--blue-text);
+  --color-ring: var(--blue-text);
+}
